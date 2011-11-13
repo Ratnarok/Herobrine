@@ -1,0 +1,9 @@
+name: Herobrine
+main: com.steaks4uce.Herobrine.Herobrine
+author: steaks4uce
+version: 0.5
+description: Hes watching... and waiting.
+permissions:
+  herobrine.exempt:
+    description: Gives player all Herobrine related permissions
+    default: op
