@@ -20,8 +20,6 @@
 /*  20 */   private final HerobrineBlock blockListener = new HerobrineBlock(this);
 /*  21 */   private final HerobrinePlayer playerListener = new HerobrinePlayer(this);
 /*  22 */   static final Logger log = Logger.getLogger("Minecraft");
-/*  23 */   public static String affectedPlayer = null;
-/*  24 */   public static int occuringEvent = 0;
 /*  25 */   public static int innerChance = 100000;
 /*  26 */   public static Boolean trackingEntity = Boolean.valueOf(false);
 /*     */   protected Entity herobrineModel;
@@ -50,7 +48,7 @@
 /*  50 */         settingsFile.put("change-environment", Boolean.toString(changeEnvironment.booleanValue()));
 /*  51 */         settingsFile.put("remove-mossystone", Boolean.toString(removeMossyCobblestone.booleanValue()));
 /*  52 */         settingsFile.put("action-chance", Integer.toString(innerChance));
-/*  53 */         settingsFile.store(out, "Configuration file for Herobrine 0.5");
+/*  53 */         settingsFile.store(out, "Configuration file for Herobrine 0.6");
 /*     */       } catch (IOException ex) {
 /*  55 */         Logger.getLogger(Herobrine.class.getName()).log(Level.SEVERE, null, ex);
 /*     */       }
@@ -82,22 +80,20 @@
 /*  82 */     pm.registerEvent(Event.Type.PLAYER_MOVE, this.playerListener, Event.Priority.Normal, this);
               pm.registerEvent(Event.Type.BLOCK_PLACE, this.blockListener, Event.Priority.Normal, this);
 /*     */   }
-/*     */ 
-/*     */   public void eventLogger() {
-/*  86 */     if (occuringEvent == 1) {
-/*  87 */       log.info("[Herobrine] Herobrine was summoned by " + affectedPlayer + "!");
-/*  88 */     } else if (occuringEvent == 2) {
-/*  91 */       log.info("[Herobrine] Herobrine placed a torch near " + affectedPlayer + "!");
-/*  92 */     } else if (occuringEvent == 3) {
-/*  93 */       log.info("[Herobrine] Herobrine placed a sign near " + affectedPlayer + "!");
-              } else if (occuringEvent == 4) {
-                log.info("[Herobrine] Herobrine played a sound near " + affectedPlayer + "!"); 
-/*  94 */     } else if (occuringEvent == 5) {
-                log.info("[Herobrine] Herobrine spawned near " + affectedPlayer + "!");
-              }
-/*  99 */     occuringEvent = 0;
-/* 100 */     affectedPlayer = null;
-/*     */   }
+
+            public void logEvent(int event, String p) {
+                if (event == 1) {
+/*  87 */           log.info("[Herobrine] Herobrine was summoned by " + p + "!");
+/*  88 */       } else if (event == 2) {
+/*  91 */           log.info("[Herobrine] Herobrine placed a torch near " + p + "!");
+/*  92 */       } else if (event == 3) {
+/*  93 */           log.info("[Herobrine] Herobrine placed a sign near " + p + "!");
+                } else if (event == 4) {
+                    log.info("[Herobrine] Herobrine played a sound near " + p + "!"); 
+/*  94 */       } else if (event == 5) {
+                    log.info("[Herobrine] Herobrine spawned near " + p + "!");
+                }
+            }   
 
             public boolean isDead() {
                if (herobrineModel == null || herobrineModel.isDead() == true) {
