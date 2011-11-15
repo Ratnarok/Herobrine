@@ -45,9 +45,7 @@
 /*    */         }
 /* 46 */         Herobrine.trackingEntity = Boolean.valueOf(true);
 /* 47 */         w.spawnCreature(b.getLocation(), CreatureType.ZOMBIE);
-/* 48 */         Herobrine.occuringEvent = 1;
-/* 49 */         Herobrine.affectedPlayer = p.getName();
-/* 50 */         plugin.eventLogger();
+/* 48 */         plugin.logEvent(1, p.getName()); 
 /*    */       }
 /*    */     }
 /*    */   }

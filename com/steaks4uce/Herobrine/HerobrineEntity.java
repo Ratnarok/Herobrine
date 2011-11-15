@@ -51,7 +51,7 @@
 /* 52 */       if (Herobrine.sendMessages.booleanValue() == true) {
 /* 53 */         plugin.getServer().broadcastMessage("<Herobrine> This isn't the end.");
 /*    */       }
-/* 55 */       ItemStack appleDrop = new ItemStack(Material.APPLE, 1);
+/* 55 */       ItemStack appleDrop = new ItemStack(Material.GOLDEN_APPLE, 1);
 /* 56 */       w.dropItemNaturally(e.getLocation(), appleDrop);
 /* 57 */       if (Herobrine.specialEffects.booleanValue() == true) {
 /* 58 */         w.createExplosion(e.getLocation(), -1.0F);
