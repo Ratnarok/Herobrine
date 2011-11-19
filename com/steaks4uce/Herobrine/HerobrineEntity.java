@@ -36,7 +36,7 @@
 /*    */   {
 /* 37 */     Entity e = event.getEntity();
 /* 38 */     if ((event.getCreatureType() == CreatureType.ZOMBIE) && (Herobrine.trackingEntity.booleanValue() == true) && 
-/* 39 */       (plugin.herobrineModel == null)) {
+/* 39 */       (plugin.isDead()==true)) {
 /* 40 */       plugin.herobrineModel = e;
 /* 41 */       Herobrine.trackingEntity = Boolean.valueOf(false);
 /*    */     }
@@ -51,7 +51,7 @@
 /* 52 */       if (Herobrine.sendMessages.booleanValue() == true) {
 /* 53 */         plugin.getServer().broadcastMessage("<Herobrine> This isn't the end.");
 /*    */       }
-/* 55 */       ItemStack appleDrop = new ItemStack(Material.APPLE, 1);
+/* 55 */       ItemStack appleDrop = new ItemStack(Material.GOLDEN_APPLE, 1);
 /* 56 */       w.dropItemNaturally(e.getLocation(), appleDrop);
 /* 57 */       if (Herobrine.specialEffects.booleanValue() == true) {
 /* 58 */         w.createExplosion(e.getLocation(), -1.0F);
