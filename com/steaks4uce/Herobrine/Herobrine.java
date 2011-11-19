@@ -20,21 +20,25 @@
 /*  20 */   private final HerobrineBlock blockListener = new HerobrineBlock(this);
 /*  21 */   private final HerobrinePlayer playerListener = new HerobrinePlayer(this);
 /*  22 */   static final Logger log = Logger.getLogger("Minecraft");
-/*  25 */   public static int innerChance = 100000;
+
+            //Important internal variables
 /*  26 */   public static Boolean trackingEntity = Boolean.valueOf(false);
 /*     */   protected Entity herobrineModel;
+            
+            //Default values in case of loading failure
+/*  25 */   public static int innerChance = 100000;
 /*  28 */   public static Boolean removeMossyCobblestone = Boolean.valueOf(false);
 /*  29 */   public static Boolean changeEnvironment = Boolean.valueOf(true);
 /*  30 */   public static Boolean specialEffects = Boolean.valueOf(true);
 /*  31 */   public static Boolean sendMessages = Boolean.valueOf(true);
 /*  32 */   public static Boolean modifyWorld = Boolean.valueOf(true);
+
+            //Configuration file variables
 /*  33 */   public static String mainDirectory = "plugins/Herobrine";
 /*  34 */   public static File configFile = new File(mainDirectory + File.separator + "config.properties");
 /*  35 */   public static Properties settingsFile = new Properties();
 /*     */ 
-/*     */   public void onDisable()
-/*     */   {
-/*     */   }
+/*     */   public void onDisable() {}
 /*     */ 
 /*     */   public void onEnable() {
 /*  42 */     new File(mainDirectory).mkdir();
@@ -48,7 +52,7 @@
 /*  50 */         settingsFile.put("change-environment", Boolean.toString(changeEnvironment.booleanValue()));
 /*  51 */         settingsFile.put("remove-mossystone", Boolean.toString(removeMossyCobblestone.booleanValue()));
 /*  52 */         settingsFile.put("action-chance", Integer.toString(innerChance));
-/*  53 */         settingsFile.store(out, "Configuration file for Herobrine 0.6");
+/*  53 */         settingsFile.store(out, "Configuration file for Herobrine 0.7");
 /*     */       } catch (IOException ex) {
 /*  55 */         Logger.getLogger(Herobrine.class.getName()).log(Level.SEVERE, null, ex);
 /*     */       }
@@ -89,17 +93,16 @@
 /*  92 */       } else if (event == 3) {
 /*  93 */           log.info("[Herobrine] Herobrine placed a sign near " + p + "!");
                 } else if (event == 4) {
-                    log.info("[Herobrine] Herobrine played a sound near " + p + "!"); 
+                    log.info("[Herobrine] Herobrine played a sound for " + p + "!"); 
 /*  94 */       } else if (event == 5) {
-                    log.info("[Herobrine] Herobrine spawned near " + p + "!");
+                    log.info("[Herobrine] Herobrine is attacking " + p + "!");
+                } else if (event == 6) {
+                    log.info("[Herobrine] Herobrine appeared near " + p + "!");
                 }
             }   
 
             public boolean isDead() {
-               if (herobrineModel == null || herobrineModel.isDead() == true) {
-                   return true;
-               } else {
-                   return false;
-               }
+               if (herobrineModel == null || herobrineModel.isDead() == true) { return true;
+               } else { return false;}
             }
 /*     */ }
