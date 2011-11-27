@@ -1,5 +1,6 @@
 name: Herobrine
 main: com.steaks4uce.Herobrine.Herobrine
 author: steaks4uce
-version: 0.7
+version: 1.0
 description: Hes watching... and waiting.
+softdepend: [Spout]
