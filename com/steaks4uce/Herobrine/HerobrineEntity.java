@@ -36,7 +36,7 @@
 /*    */   {
 /* 37 */     Entity e = event.getEntity();
 /* 38 */     if ((event.getCreatureType() == CreatureType.ZOMBIE) && (Herobrine.trackingEntity.booleanValue() == true) && 
-/* 39 */       (plugin.herobrineModel == null)) {
+/* 39 */       (plugin.isDead()==true)) {
 /* 40 */       plugin.herobrineModel = e;
 /* 41 */       Herobrine.trackingEntity = Boolean.valueOf(false);
 /*    */     }

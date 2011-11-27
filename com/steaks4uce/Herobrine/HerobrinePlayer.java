@@ -28,7 +28,7 @@
 /* 31 */     int eventChoice = this.chanceGenerator.nextInt(Herobrine.innerChance + 1);
 /* 32 */     if (eventChoice == 1) {
                 if (Herobrine.modifyWorld==true) {
-/* 41 */            createTorch(p);
+/* 41 */            createTorch(p, "REDSTONE");
                 }
 /* 50 */     } else if (eventChoice == 2) {
                 if (Herobrine.modifyWorld==true) {
@@ -38,14 +38,24 @@
                  playSound(p);
              } else if (eventChoice == 4) {
                  randomSpawn(p);
+             } else if (eventChoice == 5) {
+                 if (Herobrine.modifyWorld==true) {
+                     createTorch(p, "TORCH");
+                 }
+             } else if (eventChoice == 6) {
+                 appearNear(p);
              }
 /*    */ }
 
-        public void createTorch(Player p) {
-            Block redstoneTorch = p.getLocation().add(5.0D, 0.0D, 0.0D).getBlock();
-            Block groundBlock = redstoneTorch.getLocation().subtract(0.0D, 1.0D, 0.0D).getBlock();
-            if ((redstoneTorch.getTypeId() == 0) && (groundBlock.getTypeId() != 0)) {
-                redstoneTorch.setType(Material.REDSTONE_TORCH_ON);
+        public void createTorch(Player p, String type) {
+            Block torch = p.getLocation().add(5.0D, 0.0D, 0.0D).getBlock();
+            Block groundBlock = torch.getLocation().subtract(0.0D, 1.0D, 0.0D).getBlock();
+            if ((torch.getTypeId() == 0) && (groundBlock.getTypeId() != 0)) {
+                if (type == "REDSTONE") {
+                    torch.setType(Material.REDSTONE_TORCH_ON);
+                } else if (type == "TORCH") {
+                    torch.setType(Material.TORCH);
+                }
                 plugin.logEvent(2, p.getName());
             }
         }
@@ -74,8 +84,8 @@
 /*    */           } else if (signText==6) {
                      signBlock.setLine(1, ChatColor.DARK_RED + "I'm alive.");
                    } else if (signText==7) {
-                     signBlock.setLine(1, ChatColor.DARK_RED + "R.I.P.");
-                     signBlock.setLine(2, ChatColor.DARK_RED + p.getName());
+                     signBlock.setLine(1, ChatColor.DARK_RED + "I told you, ");
+                     signBlock.setLine(2, ChatColor.DARK_RED + p.getName() + ".");
                    } else if (signText==8) {
                      signBlock.setLine(1, ChatColor.DARK_RED + "You don't know");
                      signBlock.setLine(2, ChatColor.DARK_RED + "what you did.");
@@ -93,16 +103,28 @@
         }
         
         public void randomSpawn(Player p) {
-            if (plugin.isDead()) {
+            if (plugin.isDead() == true) {
                 World w = p.getWorld();
                 w.createExplosion(p.getLocation().add(3, 0, 3), -1.0F);
                 w.strikeLightning(p.getLocation().add(3, 0, 3));
                 Herobrine.trackingEntity = true;
                 w.spawnCreature(p.getLocation().add(3, 0, 3), CreatureType.ZOMBIE);
                 p.sendMessage("<Herobrine> Remember me, " + p.getName() + "?");
-                Block pBlock = p.getLocation().getBlock();
-                pBlock.setType(Material.FIRE);
                 plugin.logEvent(5, p.getName());
+            }
+        }
+        
+        public void appearNear(Player p) {
+            if (plugin.isDead() == true) {
+                World w = p.getWorld();
+                Herobrine.trackingEntity = true;
+                w.spawnCreature(p.getLocation().add(10, 0, 0), CreatureType.ZOMBIE);
+                plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                    public void run() {
+                        plugin.herobrineModel.remove();
+                    }
+                }, 40L);
+                plugin.logEvent(6, p.getName());
             }
         }
 }
