@@ -19,6 +19,7 @@
 /*  19 */   private final HerobrineEntity entityListener = new HerobrineEntity(this);
 /*  20 */   private final HerobrineBlock blockListener = new HerobrineBlock(this);
 /*  21 */   private final HerobrinePlayer playerListener = new HerobrinePlayer(this);
+            private final HerobrineSpout spoutListener = new HerobrineSpout(this);
 /*  22 */   static final Logger log = Logger.getLogger("Minecraft");
 
             //Important internal variables
@@ -52,7 +53,7 @@
 /*  50 */         settingsFile.put("change-environment", Boolean.toString(changeEnvironment.booleanValue()));
 /*  51 */         settingsFile.put("remove-mossystone", Boolean.toString(removeMossyCobblestone.booleanValue()));
 /*  52 */         settingsFile.put("action-chance", Integer.toString(innerChance));
-/*  53 */         settingsFile.store(out, "Configuration file for Herobrine 0.7");
+/*  53 */         settingsFile.store(out, "Configuration file for Herobrine 1.0");
 /*     */       } catch (IOException ex) {
 /*  55 */         Logger.getLogger(Herobrine.class.getName()).log(Level.SEVERE, null, ex);
 /*     */       }
@@ -82,9 +83,25 @@
 /*  80 */     pm.registerEvent(Event.Type.ENTITY_DEATH, this.entityListener, Event.Priority.Normal, this);
 /*  81 */     pm.registerEvent(Event.Type.CREATURE_SPAWN, this.entityListener, Event.Priority.Normal, this);
 /*  82 */     pm.registerEvent(Event.Type.PLAYER_MOVE, this.playerListener, Event.Priority.Normal, this);
-              pm.registerEvent(Event.Type.BLOCK_PLACE, this.blockListener, Event.Priority.Normal, this);
+              pm.registerEvent(Event.Type.ENTITY_TARGET, this.entityListener, Event.Priority.Normal, this); 
+              pm.registerEvent(Event.Type.CUSTOM_EVENT, spoutListener, Event.Priority.Normal, this);
+              getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
+                public void run() {
+                    if (isDead() == false) {
+                        herobrineModel.setVelocity(herobrineModel.getLocation().getDirection().multiply(0.7));
+                    }
+                }
+              }, 0L, 20L);
 /*     */   }
 
+            public boolean isDead() {
+               if (herobrineModel == null || herobrineModel.isDead() == true) { 
+                   return true;
+               } else { 
+                   return false;
+               }
+            }
+            
             public void logEvent(int event, String p) {
                 if (event == 1) {
 /*  87 */           log.info("[Herobrine] Herobrine was summoned by " + p + "!");
@@ -98,11 +115,12 @@
                     log.info("[Herobrine] Herobrine is attacking " + p + "!");
                 } else if (event == 6) {
                     log.info("[Herobrine] Herobrine appeared near " + p + "!");
+                } else if (event == 7) {
+                    log.info("[Herobrine] Herobrine placed fire near " + p + "!");
+                } else if (event == 8) {
+                    log.info("[Herobrine] Herobrine was defeated by " + p + "!");
+                } else if (event == 9) {
+                    log.info("[Herobrine] Herobrine dropped an item near " + p + "!");
                 }
             }   
-
-            public boolean isDead() {
-               if (herobrineModel == null || herobrineModel.isDead() == true) { return true;
-               } else { return false;}
-            }
 /*     */ }
