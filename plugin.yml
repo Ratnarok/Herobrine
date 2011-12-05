@@ -3,4 +3,7 @@ main: com.steaks4uce.Herobrine.Herobrine
 author: steaks4uce
 version: 1.0
 description: Hes watching... and waiting.
-softdepend: [Spout]
+commands:
+  hb:
+    description: Spawns Herobrine near the player
+    usage: /hb player
