@@ -1,6 +1,8 @@
 package com.steaks4uce.Herobrine.listeners;
 import com.steaks4uce.Herobrine.Herobrine;
 import com.steaks4uce.Herobrine.effects.SmokeArea;
+import com.steaks4uce.Herobrine.events.Events;
+import com.steaks4uce.Herobrine.logger.Logger;
 
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -14,6 +16,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 public class HeroBlock extends BlockListener {
     public static Herobrine plugin;
+    Logger log = new Logger();
 
     public HeroBlock(Herobrine instance) {
         plugin = instance;
@@ -27,8 +30,8 @@ public class HeroBlock extends BlockListener {
             World w = event.getBlock().getWorld();
             Block netherRack = b.getLocation().subtract(0.0D, 1.0D, 0.0D).getBlock();
             Block mossyCobble = b.getLocation().subtract(0.0D, 2.0D, 0.0D).getBlock();
-            plugin.smokes.add(new SmokeArea(netherRack.getLocation()));
             if (netherRack.getType().equals(Material.NETHERRACK) && mossyCobble.getType().equals(Material.MOSSY_COBBLESTONE) && plugin.isDead() == true) {
+                Herobrine.isAttacking = true;
                 if (Herobrine.changeEnvironment.booleanValue() == true) {
                     w.setStorm(true);
                     w.setTime(14200); 
@@ -53,7 +56,7 @@ public class HeroBlock extends BlockListener {
                 }
                 Herobrine.trackingEntity = Boolean.valueOf(true);
                 w.spawnCreature(b.getLocation(), CreatureType.ZOMBIE);
-                plugin.logEvent(1, p.getName()); 
+                log.event(1, p.getName()); 
             }
         }
     }
@@ -73,6 +76,8 @@ public class HeroBlock extends BlockListener {
         if (b.getType().equals(Material.LOCKED_CHEST)) {
             event.setCancelled(true);
             b.setType(Material.AIR);
+            Events actions = new Events(plugin);
+            actions.explodeChest(event.getPlayer(), b.getLocation());
         }
     }
 }

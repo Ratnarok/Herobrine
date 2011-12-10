@@ -1,11 +1,10 @@
 package com.steaks4uce.Herobrine.listeners;
 import com.steaks4uce.Herobrine.Herobrine;
-import com.steaks4uce.Herobrine.effects.FireTrail;
+import com.steaks4uce.Herobrine.logger.Logger;
 
 import java.util.Random;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Entity;   
 import org.bukkit.entity.Player;
@@ -20,6 +19,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class HeroEntity extends EntityListener {
     public static Herobrine plugin;
+    Logger log = new Logger();
     
     public HeroEntity(Herobrine instance) {
         plugin = instance;
@@ -28,7 +28,7 @@ public class HeroEntity extends EntityListener {
     @Override
     public void onEntityDamage(EntityDamageEvent event) {
         Entity e = event.getEntity();
-        if (e == plugin.herobrineModel) {
+        if (e == plugin.hbEntity) {
             if (!(event.getCause()==DamageCause.ENTITY_ATTACK)) {
                 event.setCancelled(true);
                 e.setFireTicks(0);
@@ -42,7 +42,7 @@ public class HeroEntity extends EntityListener {
     public void onCreatureSpawn(CreatureSpawnEvent event) {
         Entity e = event.getEntity();
         if (event.getCreatureType() == CreatureType.ZOMBIE && Herobrine.trackingEntity.booleanValue() == true && plugin.isDead() == true) {
-            plugin.herobrineModel = e;
+            plugin.hbEntity = e;
             Herobrine.trackingEntity = Boolean.valueOf(false);
         }
     }
@@ -51,13 +51,14 @@ public class HeroEntity extends EntityListener {
     public void onEntityDeath(EntityDeathEvent event) {
         Entity e = event.getEntity();
         World w = event.getEntity().getWorld();
-        if (e == plugin.herobrineModel) {
-            plugin.herobrineModel = null;
+        if (e == plugin.hbEntity) {
+            plugin.hbEntity = null;
             ItemStack appleDrop = new ItemStack(Material.APPLE, 1);
             w.dropItemNaturally(e.getLocation(), appleDrop);
             if (Herobrine.specialEffects.booleanValue() == true) {
                 w.createExplosion(e.getLocation(), -1.0F);
             }
+            Herobrine.isAttacking = false;
             event.setDroppedExp(0);
             event.getDrops().clear();
             if(e.getLastDamageCause() instanceof EntityDamageByEntityEvent) {
@@ -77,7 +78,7 @@ public class HeroEntity extends EntityListener {
                             p.sendMessage("<Herobrine> I will prevail!");
                         }
                     } 
-                    plugin.logEvent(8, p.getName());
+                    log.event(8, p.getName());
                 }
             }
         }
@@ -85,7 +86,7 @@ public class HeroEntity extends EntityListener {
 
     @Override
     public void onEntityTarget(EntityTargetEvent event) {
-        if (event.getTarget() == plugin.herobrineModel) {
+        if (event.getTarget() == plugin.hbEntity) {
             event.setCancelled(true);
         }
     } 
