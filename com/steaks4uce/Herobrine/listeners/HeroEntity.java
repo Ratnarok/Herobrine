@@ -41,7 +41,7 @@ public class HeroEntity extends EntityListener {
     @Override
     public void onCreatureSpawn(CreatureSpawnEvent event) {
         Entity e = event.getEntity();
-        if (event.getCreatureType() == CreatureType.ZOMBIE && Herobrine.trackingEntity.booleanValue() == true && plugin.isDead() == true) {
+        if (event.getCreatureType() == CreatureType.PIG_ZOMBIE && Herobrine.trackingEntity.booleanValue() == true && plugin.isDead() == true) {
             plugin.hbEntity = e;
             Herobrine.trackingEntity = Boolean.valueOf(false);
         }

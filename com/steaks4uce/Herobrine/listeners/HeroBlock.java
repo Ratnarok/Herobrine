@@ -55,7 +55,7 @@ public class HeroBlock extends BlockListener {
                     }
                 }
                 Herobrine.trackingEntity = Boolean.valueOf(true);
-                w.spawnCreature(b.getLocation(), CreatureType.ZOMBIE);
+                w.spawnCreature(b.getLocation(), CreatureType.PIG_ZOMBIE);
                 log.event(1, p.getName()); 
             }
         }

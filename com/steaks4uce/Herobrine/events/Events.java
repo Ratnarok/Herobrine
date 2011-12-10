@@ -81,7 +81,7 @@ public class Events {
             World w = p.getWorld();
             w.createExplosion(p.getLocation().add(3, 0, 3), -1.0F);
             Herobrine.trackingEntity = true;
-            w.spawnCreature(p.getLocation().add(3, 0, 3), CreatureType.ZOMBIE);
+            w.spawnCreature(p.getLocation().add(3, 0, 3), CreatureType.PIG_ZOMBIE);
             Herobrine.isAttacking = true;
             Random messages = new Random();
             int message = messages.nextInt(3);
@@ -102,7 +102,7 @@ public class Events {
             Block b = p.getLocation().add(5, 0, 0).getBlock();
             if (b.getType() == Material.AIR) {
                 Herobrine.trackingEntity = true;
-                w.spawnCreature(p.getLocation().add(5, 0, 0), CreatureType.ZOMBIE);
+                w.spawnCreature(p.getLocation().add(5, 0, 0), CreatureType.PIG_ZOMBIE);
                 plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                     public void run() {
                         plugin.hbEntity.remove();
