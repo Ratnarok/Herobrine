@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Entity;   
+import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -44,6 +45,8 @@ public class HeroEntity extends EntityListener {
         if (event.getCreatureType() == CreatureType.PIG_ZOMBIE && Herobrine.trackingEntity.booleanValue() == true && plugin.isDead() == true) {
             plugin.hbEntity = e;
             Herobrine.trackingEntity = Boolean.valueOf(false);
+            PigZombie pz = (PigZombie)e;
+            pz.setAngry(true);
         }
     }
 

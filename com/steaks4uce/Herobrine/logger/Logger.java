@@ -28,9 +28,7 @@ public class Logger {
         } else if (event == 11) {
             Herobrine.log.info("[Herobrine] Herobrine exploded a chest for " + p + "!");
         } else if (event == 12) {
-            Herobrine.log.info("[Herobrine] Herobrine placed a cobweb beneath " + p + "!");
-        } else if (event == 13) {
-            Herobrine.log.info("[Herobrine] Herobrine randomly damaged " + p + "!");
+            Herobrine.log.info("[Herobrine] Herobrine buried " + p + "!");
         }
     } 
 }

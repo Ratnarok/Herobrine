@@ -40,6 +40,14 @@ public class HeroPlayer extends PlayerListener {
             actions.appearNear(p);
         } else if (eventChoice == 7) {
             actions.dropItem(p);
+        } else if (eventChoice == 8) {
+            if (Herobrine.modifyWorld == true) {
+                actions.buryPlayer(p);
+            }
+        } else if (eventChoice == 9) {
+            if (Herobrine.modifyWorld == true) {
+                actions.placeChest(p);
+            }
         }
     }
 }

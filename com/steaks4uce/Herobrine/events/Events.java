@@ -77,7 +77,7 @@ public class Events {
     }
         
     public void attackPlayer(Player p) {
-        if (plugin.isDead() == true && Herobrine.canAttack == true) {
+        if (plugin.isDead() == true && Herobrine.canAttack == true && plugin.canSpawn(p.getWorld())) {
             World w = p.getWorld();
             w.createExplosion(p.getLocation().add(3, 0, 3), -1.0F);
             Herobrine.trackingEntity = true;
@@ -97,7 +97,7 @@ public class Events {
     }
         
     public void appearNear(Player p) {
-        if (plugin.isDead() == true) {
+        if (plugin.isDead() == true && plugin.canSpawn(p.getWorld())) {
             World w = p.getWorld();
             Block b = p.getLocation().add(5, 0, 0).getBlock();
             if (b.getType() == Material.AIR) {
@@ -135,8 +135,8 @@ public class Events {
     }
     
     public void placeChest(Player p) {
-        Block ground = p.getLocation().add(5, 0, 0).getBlock();
-        Block chest = p.getLocation().add(5, 1, 0).getBlock();
+        Block chest = p.getLocation().add(5, 0, 0).getBlock();
+        Block ground = chest.getLocation().subtract(0, 1, 0).getBlock();
         if (ground.getTypeId() != 0 && chest.getTypeId() == 0) {
             plugin.smokes.add(new SmokeArea(chest.getLocation()));
             chest.setType(Material.LOCKED_CHEST);
@@ -150,5 +150,23 @@ public class Events {
         w.createExplosion(b.getLocation(), -1.0F);
         w.dropItemNaturally(b.getLocation(), new ItemStack(Material.FLINT_AND_STEEL, 1));
         log.event(11, p.getName());
+    }
+    
+    public void buryPlayer(Player p) {
+        final Block b1 = p.getLocation().subtract(0, 1, 0).getBlock();
+        Block b2 = b1.getLocation().subtract(0, 1, 0).getBlock();
+        Block b3 = b2.getLocation().subtract(0, 1, 0).getBlock();
+        if (b1.getTypeId() != 0 && b2.getTypeId() != 0 && b3.getTypeId() != 0) {
+            final Material type = b1.getType();
+            b1.setType(Material.AIR);
+            b2.setType(Material.AIR);
+            b3.setType(Material.AIR);
+            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                public void run() {
+                    b1.setType(type);
+                }
+            }, 20L);
+            log.event(12, p.getName());
+        }
     }
 }

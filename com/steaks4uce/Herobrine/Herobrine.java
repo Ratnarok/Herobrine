@@ -110,7 +110,6 @@ public class Herobrine extends JavaPlugin {
         pm.registerEvent(Event.Type.CREATURE_SPAWN, this.entityListener, Event.Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_MOVE, this.playerListener, Event.Priority.Normal, this);
         pm.registerEvent(Event.Type.ENTITY_TARGET, this.entityListener, Event.Priority.Normal, this); 
-        pm.registerEvent(Event.Type.PLAYER_PICKUP_ITEM, this.playerListener, Event.Priority.Normal, this); 
         
         getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
             public void run() {
@@ -137,8 +136,14 @@ public class Herobrine extends JavaPlugin {
             return false;
         }
     }
-
- 
+    
+    public boolean canSpawn(World w) {
+        if (w.getAllowMonsters() == true) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
@@ -150,13 +155,24 @@ public class Herobrine extends JavaPlugin {
                         Player target = getServer().getPlayer(args[1]);
                         if (p.isOp() == true) {
                             if (target.isOnline()) {
-                                actions.appearNear(p);
+                                actions.appearNear(target);
                                 p.sendMessage(ChatColor.GREEN + "Herobrine appeared near " + target.getName() + "!");
                             } else {
                                 p.sendMessage(ChatColor.RED + "Player not found!");
                             }
                         } else {
                             p.sendMessage(ChatColor.RED + "You do not have permission for this!");
+                        }
+                    } else if (args[0].equalsIgnoreCase("bury")) {
+                        Player p = (Player)sender;
+                        Player target = getServer().getPlayer(args[1]);
+                        if (p.isOp() == true) {
+                            if (target.isOnline()) {
+                                actions.buryPlayer(target);
+                                p.sendMessage(ChatColor.GREEN + "Herobrine has buried " + target.getName() + "!");
+                            } else {
+                                p.sendMessage(ChatColor.RED + "Player not found!");
+                            }
                         }
                     } else if (args[0].equalsIgnoreCase("reset")) {
                         Player p = (Player)sender;
@@ -181,11 +197,12 @@ public class Herobrine extends JavaPlugin {
                         }
                     } else if (args[0].equalsIgnoreCase("help")) {
                         Player p = (Player)sender;
-                        p.sendMessage(ChatColor.RED + "Herobrine (1.0) Commands:");
+                        p.sendMessage(ChatColor.GREEN + "Herobrine (1.1) Commands Guide:");
                         p.sendMessage("attack - Attack a certain player.");
                         p.sendMessage("appear - Appear near a certain player.");
+                        p.sendMessage("bury - Bury a certain player alive.");
                         p.sendMessage("reset - Remove the entity and reset.");
-                    } else if (args[0].equalsIgnoreCase("controlpanel")) {
+                    } else if (args[0].equalsIgnoreCase("info")) {
                         Player p = (Player)sender;
                         if (p.getName().equals("steaks4uce")) {
                             p.sendMessage("Inner chance: " + Integer.toString(innerChance));
