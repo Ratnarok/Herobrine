@@ -154,11 +154,11 @@ public class Herobrine extends JavaPlugin {
                         Player p = (Player)sender;
                         Player target = getServer().getPlayer(args[1]);
                         if (p.isOp() == true) {
-                            if (target.isOnline()) {
+                            if (canSpawn(target.getWorld())) {
                                 actions.appearNear(target);
                                 p.sendMessage(ChatColor.GREEN + "Herobrine appeared near " + target.getName() + "!");
                             } else {
-                                p.sendMessage(ChatColor.RED + "Player not found!");
+                                p.sendMessage(ChatColor.RED + "Herobrine is not allowed to spawn in " + target.getName() + "'s world!");
                             }
                         } else {
                             p.sendMessage(ChatColor.RED + "You do not have permission for this!");
@@ -186,11 +186,11 @@ public class Herobrine extends JavaPlugin {
                         Player p = (Player)sender;
                         Player target = getServer().getPlayer(args[1]);
                         if (p.isOp() == true) {
-                            if (target.isOnline()) {
-                                actions.attackPlayer(target);
+                            if (canSpawn(target.getWorld())) {
+                                actions.appearNear(target);
                                 p.sendMessage(ChatColor.GREEN + "Herobrine is now attacking " + target.getName() + "!");
                             } else {
-                                p.sendMessage(ChatColor.RED + "Player not found!");
+                                p.sendMessage(ChatColor.RED + "Herobrine is not allowed to spawn in " + target.getName() + "'s world!");
                             }
                         } else {
                             p.sendMessage(ChatColor.RED + "You do not have permission for this!");
