@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.Random;
 import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
@@ -22,11 +23,13 @@ import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.Vector;
 
 public class Herobrine extends JavaPlugin {
     private final HeroEntity entityListener = new HeroEntity(this);
@@ -123,7 +126,25 @@ public class Herobrine extends JavaPlugin {
                 }
                 if (isDead() == false && fireTrails == true && isAttacking == true) {
                     Block b = hbEntity.getLocation().getBlock();
-                    b.setType(Material.FIRE);
+                    Block g = b.getLocation().subtract(0, 1, 0).getBlock();
+                    if (b.getType().equals(Material.AIR) && !(g.getType().equals(Material.AIR))) {
+                        b.setType(Material.FIRE);
+                    }
+                }
+                if (isDead() == false) {
+                    Random rand = new Random();
+                    int doJump = rand.nextInt(4);
+                    if (doJump == 1) {
+                        actions.superJump(0.50);
+                    }
+                }
+                if (isDead() == false) {
+                    Block b = hbEntity.getLocation().getBlock();
+                    if (b.getType().equals(Material.WATER) || b.getType().equals(Material.STATIONARY_WATER)) {
+                        LivingEntity le = (LivingEntity) hbEntity;
+                        le.damage(1);
+                        actions.superJump(1.10);
+                    }
                 }
             }
         }, 0L, 20L);
@@ -201,7 +222,7 @@ public class Herobrine extends JavaPlugin {
                         p.sendMessage("attack - Attack a certain player.");
                         p.sendMessage("appear - Appear near a certain player.");
                         p.sendMessage("bury - Bury a certain player alive.");
-                        p.sendMessage("reset - Remove the entity and reset.");
+                        p.sendMessage("reset - Remove him in case of error.");
                     } else if (args[0].equalsIgnoreCase("info")) {
                         Player p = (Player)sender;
                         if (p.getName().equals("steaks4uce")) {

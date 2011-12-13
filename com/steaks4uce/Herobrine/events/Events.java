@@ -14,6 +14,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 public class Events {
     public static Herobrine plugin;
@@ -168,5 +169,11 @@ public class Events {
             }, 20L);
             log.event(12, p.getName());
         }
+    }
+    
+    public void superJump(Double i) {
+        Vector velocity = plugin.hbEntity.getVelocity();
+        Vector newVelocity = new Vector(velocity.getX(), i, velocity.getZ());
+        plugin.hbEntity.setVelocity(newVelocity);
     }
 }

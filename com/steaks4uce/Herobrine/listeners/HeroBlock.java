@@ -30,7 +30,7 @@ public class HeroBlock extends BlockListener {
             World w = event.getBlock().getWorld();
             Block netherRack = b.getLocation().subtract(0.0D, 1.0D, 0.0D).getBlock();
             Block mossyCobble = b.getLocation().subtract(0.0D, 2.0D, 0.0D).getBlock();
-            if (netherRack.getType().equals(Material.NETHERRACK) && mossyCobble.getType().equals(Material.MOSSY_COBBLESTONE) && plugin.isDead() == true) {
+            if (netherRack.getType().equals(Material.NETHERRACK) && mossyCobble.getType().equals(Material.MOSSY_COBBLESTONE) && plugin.isDead() == true && plugin.canSpawn(p.getWorld())) {
                 Herobrine.isAttacking = true;
                 if (Herobrine.changeEnvironment.booleanValue() == true) {
                     w.setStorm(true);
