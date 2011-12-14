@@ -23,13 +23,12 @@ import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.Vector;
 
 public class Herobrine extends JavaPlugin {
     private final HeroEntity entityListener = new HeroEntity(this);
@@ -138,16 +137,16 @@ public class Herobrine extends JavaPlugin {
                         actions.superJump(0.50);
                     }
                 }
-                if (isDead() == false) {
-                    Block b = hbEntity.getLocation().getBlock();
-                    if (b.getType().equals(Material.WATER) || b.getType().equals(Material.STATIONARY_WATER)) {
-                        LivingEntity le = (LivingEntity) hbEntity;
-                        le.damage(1);
-                        actions.superJump(1.10);
-                    }
-                }
             }
         }, 0L, 20L);
+        
+        Plugin spout = pm.getPlugin("Spout");
+        if (spout != null) {
+            this.log.info("[Herobrine] Successfully hooked into Spout!");
+        } else {
+            this.log.info("[Herobrine] Failed to find Spout!");
+            pm.disablePlugin(this);
+        }
     }
 
     public boolean isDead() {

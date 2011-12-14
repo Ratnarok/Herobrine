@@ -1,6 +1,7 @@
 package com.steaks4uce.Herobrine.listeners;
 import com.steaks4uce.Herobrine.Herobrine;
 import com.steaks4uce.Herobrine.logger.Logger;
+import com.steaks4uce.Herobrine.skin.EntitySkin;
 
 import java.util.Random;
 import org.bukkit.Material;
@@ -17,6 +18,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.inventory.ItemStack;
+import org.getspout.spoutapi.player.EntitySkinType;
 
 public class HeroEntity extends EntityListener {
     public static Herobrine plugin;
@@ -34,7 +36,7 @@ public class HeroEntity extends EntityListener {
                 event.setCancelled(true);
                 e.setFireTicks(0);
             } else {
-                event.setDamage(2); 
+                event.setDamage(1); 
             }
         }
     }
@@ -47,6 +49,8 @@ public class HeroEntity extends EntityListener {
             Herobrine.trackingEntity = Boolean.valueOf(false);
             PigZombie pz = (PigZombie)e;
             pz.setAngry(true);
+            EntitySkin es = new EntitySkin();
+            es.setEntitySkin(pz, "http://krecklowstudios.com/minecraft/pluginskins/herobrine.png", EntitySkinType.DEFAULT);
         }
     }
 
