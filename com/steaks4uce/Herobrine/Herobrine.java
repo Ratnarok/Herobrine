@@ -116,7 +116,7 @@ public class Herobrine extends JavaPlugin {
         getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
             public void run() {
                 if (isDead() == false) {
-                    hbEntity.setVelocity(hbEntity.getLocation().getDirection().multiply(0.8));
+                    hbEntity.setVelocity(hbEntity.getLocation().getDirection().multiply(0.6));
                 }
                 for (SmokeArea smoke : smokes) {
                     World w = smoke.loc.getWorld();
@@ -133,9 +133,7 @@ public class Herobrine extends JavaPlugin {
                 if (isDead() == false) {
                     Random rand = new Random();
                     int doJump = rand.nextInt(4);
-                    if (doJump == 1) {
-                        actions.superJump(0.50);
-                    }
+                    if (doJump == 1) { actions.superJump(0.80); }
                 }
             }
         }, 0L, 20L);
@@ -144,25 +142,19 @@ public class Herobrine extends JavaPlugin {
         if (spout != null) {
             this.log.info("[Herobrine] Successfully hooked into Spout!");
         } else {
-            this.log.info("[Herobrine] Failed to find Spout!");
+            this.log.info("[Herobrine] Failed to hook into Spout!");
             pm.disablePlugin(this);
         }
     }
 
     public boolean isDead() {
-        if (hbEntity == null || hbEntity.isDead() == true) { 
-            return true;
-        } else { 
-            return false;
-        }
+        if (hbEntity == null || hbEntity.isDead() == true) { return true; } 
+        else { return false;}
     }
     
     public boolean canSpawn(World w) {
-        if (w.getAllowMonsters() == true) {
-            return true;
-        } else {
-            return false;
-        }
+        if (w.getAllowMonsters() == true) { return true; }
+        else { return false; }
     }
     
     @Override
@@ -207,7 +199,7 @@ public class Herobrine extends JavaPlugin {
                         Player target = getServer().getPlayer(args[1]);
                         if (p.isOp() == true) {
                             if (canSpawn(target.getWorld())) {
-                                actions.appearNear(target);
+                                actions.attackPlayer(target);
                                 p.sendMessage(ChatColor.GREEN + "Herobrine is now attacking " + target.getName() + "!");
                             } else {
                                 p.sendMessage(ChatColor.RED + "Herobrine is not allowed to spawn in " + target.getName() + "'s world!");

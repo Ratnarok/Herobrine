@@ -18,7 +18,6 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.inventory.ItemStack;
-import org.getspout.spoutapi.player.EntitySkinType;
 
 public class HeroEntity extends EntityListener {
     public static Herobrine plugin;
@@ -50,7 +49,7 @@ public class HeroEntity extends EntityListener {
             PigZombie pz = (PigZombie)e;
             pz.setAngry(true);
             EntitySkin es = new EntitySkin();
-            es.setEntitySkin(pz, "http://krecklowstudios.com/minecraft/pluginskins/herobrine.png", EntitySkinType.DEFAULT);
+            es.setSkin(pz, "http://www.nkrecklow.com/skins/herobrine.png");
         }
     }
 
@@ -80,7 +79,7 @@ public class HeroEntity extends EntityListener {
                         } else if (message == 2) {
                             p.sendMessage("<Herobrine> I'll be back.");
                         } else if (message == 3) {
-                            p.sendMessage("<Herobrine> I'm still alive...");
+                            p.sendMessage("<Herobrine> I'm watching you, I always will be... ");
                         } else {
                             p.sendMessage("<Herobrine> I will prevail!");
                         }

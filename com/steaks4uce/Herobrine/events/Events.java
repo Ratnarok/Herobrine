@@ -12,7 +12,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Sheep;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -175,5 +177,24 @@ public class Events {
         Vector velocity = plugin.hbEntity.getVelocity();
         Vector newVelocity = new Vector(velocity.getX(), i, velocity.getZ());
         plugin.hbEntity.setVelocity(newVelocity);
+    }
+    
+    public void shootUp(Player p, Double i) {
+        Vector vel = p.getVelocity();
+        Vector newvel = new Vector(vel.getX(), i, vel.getZ());
+        p.setVelocity(newvel);
+    }
+    
+    public void sheepAttack(Player p) {
+        int total = 0;
+        for (Entity e : p.getNearbyEntities(5, 5, 5)) {
+            if (e instanceof Sheep) {
+                World w = e.getWorld();
+                w.spawnCreature(e.getLocation(), CreatureType.CAVE_SPIDER);
+                e.remove();
+                total++;
+            }
+        }
+        if (total != 0) { log.event(13, p.getName()); }
     }
 }
