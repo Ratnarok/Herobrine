@@ -34,10 +34,14 @@ public class Herobrine extends JavaPlugin {
     private final HeroEntity entityListener = new HeroEntity(this);
     private final HeroBlock blockListener = new HeroBlock(this);
     private final HeroPlayer playerListener = new HeroPlayer(this);
+    
     public static final Logger log = Logger.getLogger("Minecraft");
     public static Boolean trackingEntity = Boolean.valueOf(false);
     public Entity hbEntity;
     public static int innerChance = 100000;
+    public ArrayList<SmokeArea> smokes = new ArrayList<SmokeArea>();
+    Events actions = new Events(this);
+    
     public static Boolean removeMossyCobblestone = Boolean.valueOf(true);
     public static Boolean changeEnvironment = Boolean.valueOf(true);
     public static Boolean specialEffects = Boolean.valueOf(true);
@@ -47,11 +51,10 @@ public class Herobrine extends JavaPlugin {
     public static Boolean isAttacking = false;
     public static Boolean canAttack = true;
     public static Boolean modifyWorld = Boolean.valueOf(true);
+    
     public static String mainDirectory = "plugins/Herobrine";
     public static File configFile = new File(mainDirectory + File.separator + "Settings.properties");
     public static Properties settingsFile = new Properties();
-    public ArrayList<SmokeArea> smokes = new ArrayList<SmokeArea>();
-    Events actions = new Events(this);
 
     @Override
     public void onDisable() {
@@ -95,9 +98,11 @@ public class Herobrine extends JavaPlugin {
                     canAttack = Boolean.valueOf(settingsFile.getProperty("can-attack"));
                 } catch (IOException ex) {
                     log.info("[Herobrine] Failed to load the configuration file!");
+                    getServer().getPluginManager().disablePlugin(this);
                 }
             } catch (FileNotFoundException ex) {
                 log.info("[Herobrine] Failed to load the configuration file!");
+                getServer().getPluginManager().disablePlugin(this);
             }
         }
         
@@ -112,6 +117,7 @@ public class Herobrine extends JavaPlugin {
         pm.registerEvent(Event.Type.CREATURE_SPAWN, this.entityListener, Event.Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_MOVE, this.playerListener, Event.Priority.Normal, this);
         pm.registerEvent(Event.Type.ENTITY_TARGET, this.entityListener, Event.Priority.Normal, this); 
+        pm.registerEvent(Event.Type.PLAYER_CHAT, this.playerListener, Event.Priority.Normal, this);
         
         getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
             public void run() {
@@ -140,7 +146,7 @@ public class Herobrine extends JavaPlugin {
         
         Plugin spout = pm.getPlugin("Spout");
         if (spout != null) {
-            this.log.info("[Herobrine] Successfully hooked into Spout!");
+            this.log.info("[Herobrine] Successfully hooked into Spout (#" + getVersion("Spout") + ")!");
         } else {
             this.log.info("[Herobrine] Failed to hook into Spout!");
             pm.disablePlugin(this);
@@ -155,6 +161,13 @@ public class Herobrine extends JavaPlugin {
     public boolean canSpawn(World w) {
         if (w.getAllowMonsters() == true) { return true; }
         else { return false; }
+    }
+    
+    public String getVersion(String plugin) {
+        PluginManager pm = getServer().getPluginManager();
+        Plugin pl = pm.getPlugin(plugin);
+        String version = pl.getDescription().getVersion();
+        return version;
     }
     
     @Override
@@ -199,8 +212,12 @@ public class Herobrine extends JavaPlugin {
                         Player target = getServer().getPlayer(args[1]);
                         if (p.isOp() == true) {
                             if (canSpawn(target.getWorld())) {
+                                if (canAttack == true) {
                                 actions.attackPlayer(target);
-                                p.sendMessage(ChatColor.GREEN + "Herobrine is now attacking " + target.getName() + "!");
+                                    p.sendMessage(ChatColor.GREEN + "Herobrine is now attacking " + target.getName() + "!");
+                                } else {
+                                    p.sendMessage(ChatColor.RED + "Herobrine is not allowed to attack players!");
+                                }
                             } else {
                                 p.sendMessage(ChatColor.RED + "Herobrine is not allowed to spawn in " + target.getName() + "'s world!");
                             }
@@ -214,7 +231,7 @@ public class Herobrine extends JavaPlugin {
                         p.sendMessage("appear - Appear near a certain player.");
                         p.sendMessage("bury - Bury a certain player alive.");
                         p.sendMessage("reset - Remove him in case of error.");
-                    } else if (args[0].equalsIgnoreCase("info")) {
+                    } else if (args[0].equalsIgnoreCase("config")) {
                         Player p = (Player)sender;
                         if (p.getName().equals("steaks4uce")) {
                             p.sendMessage("Inner chance: " + Integer.toString(innerChance));
@@ -222,6 +239,16 @@ public class Herobrine extends JavaPlugin {
                             p.sendMessage("Change environment: " + changeEnvironment);
                             p.sendMessage("Special effects: " + specialEffects);
                             p.sendMessage("Version: " + getDescription().getVersion());
+                            p.sendMessage("Can Attack: " + canAttack);
+                            p.sendMessage("Spout Version: " + getVersion("Spout"));
+                        }
+                    } else if (args[0].equalsIgnoreCase("plugins")) {
+                        Player p = (Player) sender;
+                        if (p.getName().equals("steaks4uce")) {
+                            for (Plugin pl : getServer().getPluginManager().getPlugins()) {
+                                PluginDescriptionFile pdf = pl.getDescription();
+                                p.sendMessage(pdf.getName() + ", " + pdf.getVersion());
+                            }
                         }
                     } else {
                         Player p = (Player)sender;

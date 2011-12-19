@@ -68,9 +68,9 @@ public class HeroEntity extends EntityListener {
             event.setDroppedExp(0);
             event.getDrops().clear();
             if(e.getLastDamageCause() instanceof EntityDamageByEntityEvent) {
-                EntityDamageByEntityEvent nEvent = (EntityDamageByEntityEvent) e.getLastDamageCause();
-                if(nEvent.getDamager() instanceof Player) {
-                    Player p = (Player)nEvent.getDamager();
+                EntityDamageByEntityEvent ev = (EntityDamageByEntityEvent) e.getLastDamageCause();
+                if(ev.getDamager() instanceof Player) {
+                    Player p = (Player)ev.getDamager();
                     if (Herobrine.sendMessages.booleanValue() == true) {
                         Random messages = new Random();
                         int message = messages.nextInt(3);

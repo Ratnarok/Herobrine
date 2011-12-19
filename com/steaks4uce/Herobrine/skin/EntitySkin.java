@@ -9,4 +9,8 @@ public class EntitySkin {
     public void setSkin(LivingEntity target, String url) {
         SpoutManager.getPlayerManager().getGlobalInfo().setEntitySkin(target, url, EntitySkinType.DEFAULT);
     }
+    
+    public String getSkin(LivingEntity target, String url) {
+        return SpoutManager.getPlayerManager().getGlobalInfo().getEntitySkin(target, EntitySkinType.DEFAULT);
+    }
 }

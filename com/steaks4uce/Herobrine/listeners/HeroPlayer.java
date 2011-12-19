@@ -4,6 +4,7 @@ import com.steaks4uce.Herobrine.events.Events;
 
 import java.util.Random;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
@@ -47,6 +48,20 @@ public class HeroPlayer extends PlayerListener {
         } else if (eventChoice == 9) {
             if (Herobrine.modifyWorld == true) {
                 actions.placeChest(p);
+            }
+        }
+    }
+    
+    @Override
+    public void onPlayerChat(PlayerChatEvent event) {
+        String m = event.getMessage();
+        m = m.toLowerCase();
+        if (m.contains("herobrine")) {
+            Random rand = new Random();
+            int i = rand.nextInt(26);
+            if (i == 1) {
+                Player p = event.getPlayer();
+                actions.appearNear(p);
             }
         }
     }
