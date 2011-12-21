@@ -61,7 +61,7 @@ public class HeroPlayer extends PlayerListener {
             int i = rand.nextInt(26);
             if (i == 1) {
                 Player p = event.getPlayer();
-                actions.appearNear(p);
+                p.damage(20);
             }
         }
     }

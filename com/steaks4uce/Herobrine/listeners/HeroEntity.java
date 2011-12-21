@@ -1,7 +1,6 @@
 package com.steaks4uce.Herobrine.listeners;
 import com.steaks4uce.Herobrine.Herobrine;
 import com.steaks4uce.Herobrine.logger.Logger;
-import com.steaks4uce.Herobrine.skin.EntitySkin;
 
 import java.util.Random;
 import org.bukkit.Material;
@@ -48,8 +47,6 @@ public class HeroEntity extends EntityListener {
             Herobrine.trackingEntity = Boolean.valueOf(false);
             PigZombie pz = (PigZombie)e;
             pz.setAngry(true);
-            EntitySkin es = new EntitySkin();
-            es.setSkin(pz, "http://www.nkrecklow.com/skins/herobrine.png");
         }
     }
 
