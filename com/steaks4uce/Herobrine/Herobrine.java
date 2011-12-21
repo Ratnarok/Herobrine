@@ -154,25 +154,6 @@ public class Herobrine extends JavaPlugin {
         return w.getAllowMonsters();
     }
     
-    public void disablePlugin(Plugin p) {
-        PluginManager pm = getServer().getPluginManager();
-        pm.disablePlugin(p);
-    }
-    
-    public void getRevenge() {
-//        Spout has officially screwed me over as a developer. They finally fixed the entity skinning issue, and now, 
-//        have announced they will no longer be supporting the Spout plugin (besides keeping it up to date.) This means, 
-//        Herobrine will never get his skin, unless I port him to the new Spout Server software, which I won't because 
-//        just getting him perfected on Bukkit was difficult, I am not going to recode him and learn a new API.
-//
-//        So, in conclusion, I will release version 1.1, without the skin, since the Spout team has discontinued their 
-//        support for the Spout plugin, I don't want to require a plugin thats outdated, further more, this version should 
-//        last users way into the 2.0s, its solid, stable code. Further more, if important bugs arise, I may fix it.
-//        I'm sorry I've failed and gave you guys hopes of this finishing, but thanks to some ignorant developers, my time 
-//        and work has been wasting because they want to be the big shots. I hope you guys all forgive me, and will continue 
-//        to enjoy other plugins. Goodbye.
-    }
-    
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
         if (cmd.getName().equals("hb")) {
