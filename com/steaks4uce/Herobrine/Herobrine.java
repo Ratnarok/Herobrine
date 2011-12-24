@@ -25,7 +25,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -44,7 +43,6 @@ public class Herobrine extends JavaPlugin {
     
     public static Boolean removeMossyCobblestone = Boolean.valueOf(true);
     public static Boolean changeEnvironment = Boolean.valueOf(true);
-    public static Boolean specialEffects = Boolean.valueOf(true);
     public static Boolean useFire = Boolean.valueOf(true);
     public static Boolean fireTrails = Boolean.valueOf(true);
     public static Boolean sendMessages = Boolean.valueOf(true);
@@ -71,7 +69,6 @@ public class Herobrine extends JavaPlugin {
                 FileOutputStream out = new FileOutputStream(configFile);
                 settingsFile.put("modify-world", Boolean.toString(modifyWorld.booleanValue()));
                 settingsFile.put("send-messages", Boolean.toString(sendMessages.booleanValue()));
-                settingsFile.put("special-effects", Boolean.toString(specialEffects.booleanValue()));
                 settingsFile.put("change-environment", Boolean.toString(changeEnvironment.booleanValue()));
                 settingsFile.put("remove-mossystone", Boolean.toString(removeMossyCobblestone.booleanValue()));
                 settingsFile.put("action-chance", Integer.toString(innerChance));
@@ -91,7 +88,6 @@ public class Herobrine extends JavaPlugin {
                     sendMessages = Boolean.valueOf(settingsFile.getProperty("send-messages"));
                     changeEnvironment = Boolean.valueOf(settingsFile.getProperty("change-environment"));
                     removeMossyCobblestone = Boolean.valueOf(settingsFile.getProperty("remove-mossystone"));
-                    specialEffects = Boolean.valueOf(settingsFile.getProperty("special-effects"));
                     innerChance = Integer.parseInt(settingsFile.getProperty("action-chance"));
                     useFire = Boolean.valueOf(settingsFile.getProperty("allow-fire"));
                     fireTrails = Boolean.valueOf(settingsFile.getProperty("fire-trails"));
@@ -123,31 +119,32 @@ public class Herobrine extends JavaPlugin {
             public void run() {
                 if (isDead() == false) {
                     hbEntity.setVelocity(hbEntity.getLocation().getDirection().multiply(0.6));
+                    Random rand = new Random();
+                    int doJump = rand.nextInt(4);
+                    if (doJump == 1) { actions.superJump(0.80); }
                 }
                 for (SmokeArea smoke : smokes) {
                     World w = smoke.loc.getWorld();
                     Location l = smoke.loc;
                     w.playEffect(l, Effect.SMOKE, 0);
                 }
-                if (isDead() == false && fireTrails == true && isAttacking == true) {
+                if (isDead() == false && fireTrails && isAttacking) {
                     Block b = hbEntity.getLocation().getBlock();
                     Block g = b.getLocation().subtract(0, 1, 0).getBlock();
                     if (b.getType().equals(Material.AIR) && !(g.getType().equals(Material.AIR))) {
                         b.setType(Material.FIRE);
                     }
                 }
-                if (isDead() == false) {
-                    Random rand = new Random();
-                    int doJump = rand.nextInt(4);
-                    if (doJump == 1) { actions.superJump(0.80); }
-                }
             }
         }, 0L, 20L);
     }
 
     public boolean isDead() {
-        if (hbEntity == null || hbEntity.isDead() == true) { return true; } 
-        else { return false;}
+        if (hbEntity == null || hbEntity.isDead() == true) { 
+            return true; 
+        } else { 
+            return false;
+        }
     }
     
     public boolean canSpawn(World w) {
@@ -162,7 +159,7 @@ public class Herobrine extends JavaPlugin {
                     if (args[0].equalsIgnoreCase("appear")) {
                         Player p = (Player)sender;
                         Player target = getServer().getPlayer(args[1]);
-                        if (p.isOp() == true) {
+                        if (p.isOp()) {
                             if (canSpawn(target.getWorld())) {
                                 actions.appearNear(target);
                                 p.sendMessage(ChatColor.GREEN + "Herobrine appeared near " + target.getName() + "!");
@@ -175,7 +172,7 @@ public class Herobrine extends JavaPlugin {
                     } else if (args[0].equalsIgnoreCase("bury")) {
                         Player p = (Player)sender;
                         Player target = getServer().getPlayer(args[1]);
-                        if (p.isOp() == true) {
+                        if (p.isOp()) {
                             if (target.isOnline()) {
                                 actions.buryPlayer(target);
                                 p.sendMessage(ChatColor.GREEN + "Herobrine has buried " + target.getName() + "!");
@@ -185,7 +182,7 @@ public class Herobrine extends JavaPlugin {
                         }
                     } else if (args[0].equalsIgnoreCase("reset")) {
                         Player p = (Player)sender;
-                        if (p.isOp() == true) {
+                        if (p.isOp()) {
                             hbEntity.remove();
                             p.sendMessage(ChatColor.GREEN + "Herobrine has been removed!");
                         } else {
@@ -194,10 +191,10 @@ public class Herobrine extends JavaPlugin {
                     } else if (args[0].equalsIgnoreCase("attack")) {
                         Player p = (Player)sender;
                         Player target = getServer().getPlayer(args[1]);
-                        if (p.isOp() == true) {
+                        if (p.isOp()) {
                             if (canSpawn(target.getWorld())) {
-                                if (canAttack == true) {
-                                actions.attackPlayer(target);
+                                if (canAttack) {
+                                    actions.attackPlayer(target);
                                     p.sendMessage(ChatColor.GREEN + "Herobrine is now attacking " + target.getName() + "!");
                                 } else {
                                     p.sendMessage(ChatColor.RED + "Herobrine is not allowed to attack players!");
@@ -210,29 +207,12 @@ public class Herobrine extends JavaPlugin {
                         }
                     } else if (args[0].equalsIgnoreCase("help")) {
                         Player p = (Player)sender;
-                        p.sendMessage(ChatColor.GREEN + "Herobrine (1.1) Commands Guide:");
-                        p.sendMessage("attack - Attack a certain player.");
-                        p.sendMessage("appear - Appear near a certain player.");
-                        p.sendMessage("bury - Bury a certain player alive.");
-                        p.sendMessage("reset - Remove him in case of error.");
-                    } else if (args[0].equalsIgnoreCase("config")) {
-                        Player p = (Player)sender;
-                        if (p.getName().equals("steaks4uce")) {
-                            p.sendMessage("Inner chance: " + Integer.toString(innerChance));
-                            p.sendMessage("Modify world: " + modifyWorld);
-                            p.sendMessage("Change environment: " + changeEnvironment);
-                            p.sendMessage("Special effects: " + specialEffects);
-                            p.sendMessage("Version: " + getDescription().getVersion());
-                            p.sendMessage("Can attack: " + canAttack);
-                        }
-                    } else if (args[0].equalsIgnoreCase("plugins")) {
-                        Player p = (Player) sender;
-                        if (p.getName().equals("steaks4uce")) {
-                            for (Plugin pl : getServer().getPluginManager().getPlugins()) {
-                                PluginDescriptionFile pdf = pl.getDescription();
-                                p.sendMessage(pdf.getName() + ", " + pdf.getVersion());
-                            }
-                        }
+                        ChatColor t = ChatColor.BLUE;
+                        ChatColor w = ChatColor.WHITE;
+                        p.sendMessage(t + "attack"  + w + " - Attack a certain player.");
+                        p.sendMessage(t + "appear"  + w + " - Appear near a certain player.");
+                        p.sendMessage(t + "bury"  + w + " - Bury a certain player alive.");
+                        p.sendMessage(t + "reset"  + w + " - Remove him in case of error.");
                     } else {
                         Player p = (Player)sender;
                         p.sendMessage(ChatColor.RED + "Not a known command...");
@@ -244,7 +224,7 @@ public class Herobrine extends JavaPlugin {
             } catch (Exception ex) {
                 if (sender instanceof Player) {
                     Player p = (Player)sender;
-                    p.sendMessage(ChatColor.RED + "Failed to use command! Is everything correct?");
+                    p.sendMessage(ChatColor.RED + "Error in using command, try again?");
                     p.sendMessage(ChatColor.RED + "Type '/hb help' for help");
                 } else {
                     log.info("[Herobrine] You must be a player to use this command!");

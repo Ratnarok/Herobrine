@@ -29,7 +29,7 @@ public class HeroEntity extends EntityListener {
     @Override
     public void onEntityDamage(EntityDamageEvent event) {
         Entity e = event.getEntity();
-        if (e == plugin.hbEntity) {
+        if (e.equals(plugin.hbEntity)) {
             if (!(event.getCause()==DamageCause.ENTITY_ATTACK)) {
                 event.setCancelled(true);
                 e.setFireTicks(0);
@@ -42,7 +42,7 @@ public class HeroEntity extends EntityListener {
     @Override
     public void onCreatureSpawn(CreatureSpawnEvent event) {
         Entity e = event.getEntity();
-        if (event.getCreatureType() == CreatureType.PIG_ZOMBIE && Herobrine.trackingEntity.booleanValue() == true && plugin.isDead() == true) {
+        if (event.getCreatureType().equals(CreatureType.PIG_ZOMBIE) && Herobrine.trackingEntity && plugin.isDead()) {
             plugin.hbEntity = e;
             Herobrine.trackingEntity = Boolean.valueOf(false);
             PigZombie pz = (PigZombie)e;
@@ -54,21 +54,18 @@ public class HeroEntity extends EntityListener {
     public void onEntityDeath(EntityDeathEvent event) {
         Entity e = event.getEntity();
         World w = event.getEntity().getWorld();
-        if (e == plugin.hbEntity) {
+        if (e.equals(plugin.hbEntity)) {
             plugin.hbEntity = null;
-            ItemStack appleDrop = new ItemStack(Material.APPLE, 1);
-            w.dropItemNaturally(e.getLocation(), appleDrop);
-            if (Herobrine.specialEffects.booleanValue() == true) {
-                w.createExplosion(e.getLocation(), -1.0F);
-            }
+            w.dropItemNaturally(e.getLocation(), new ItemStack(Material.GOLD_SWORD, 1));
+            w.createExplosion(e.getLocation(), -1.0F);
             Herobrine.isAttacking = false;
-            event.setDroppedExp(0);
+            event.setDroppedExp(50);
             event.getDrops().clear();
             if(e.getLastDamageCause() instanceof EntityDamageByEntityEvent) {
                 EntityDamageByEntityEvent ev = (EntityDamageByEntityEvent) e.getLastDamageCause();
                 if(ev.getDamager() instanceof Player) {
                     Player p = (Player)ev.getDamager();
-                    if (Herobrine.sendMessages.booleanValue() == true) {
+                    if (Herobrine.sendMessages) {
                         Random messages = new Random();
                         int message = messages.nextInt(3);
                         if (message == 1) {
@@ -89,7 +86,7 @@ public class HeroEntity extends EntityListener {
 
     @Override
     public void onEntityTarget(EntityTargetEvent event) {
-        if (event.getTarget() == plugin.hbEntity) {
+        if (event.getTarget().equals(plugin.hbEntity)) {
             event.setCancelled(true);
         }
     } 

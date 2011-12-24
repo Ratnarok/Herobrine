@@ -30,20 +30,18 @@ public class HeroBlock extends BlockListener {
             World w = event.getBlock().getWorld();
             Block netherRack = b.getLocation().subtract(0.0D, 1.0D, 0.0D).getBlock();
             Block mossyCobble = b.getLocation().subtract(0.0D, 2.0D, 0.0D).getBlock();
-            if (netherRack.getType().equals(Material.NETHERRACK) && mossyCobble.getType().equals(Material.MOSSY_COBBLESTONE) && plugin.isDead() == true && plugin.canSpawn(p.getWorld())) {
+            if (netherRack.getType().equals(Material.NETHERRACK) && mossyCobble.getType().equals(Material.MOSSY_COBBLESTONE) && plugin.isDead() && plugin.canSpawn(p.getWorld())) {
                 Herobrine.isAttacking = true;
-                if (Herobrine.changeEnvironment.booleanValue() == true) {
+                if (Herobrine.changeEnvironment) {
                     w.setStorm(true);
                     w.setTime(14200); 
                 }
-                if (Herobrine.removeMossyCobblestone.booleanValue() == true) {
+                if (Herobrine.removeMossyCobblestone) {
                     mossyCobble.setType(Material.COBBLESTONE);
                 }
-                if (Herobrine.specialEffects.booleanValue() == true) {
-                    w.strikeLightning(b.getLocation());
-                    w.createExplosion(b.getLocation(), -1.0F);
-                }
-                if (Herobrine.sendMessages.booleanValue() == true) {
+                w.strikeLightning(b.getLocation());
+                w.createExplosion(b.getLocation(), -1.0F);
+                if (Herobrine.sendMessages) {
                     Random messages = new Random();
                     int message = messages.nextInt(3);
                     if (message == 0) {
