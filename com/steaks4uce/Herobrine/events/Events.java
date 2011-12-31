@@ -1,9 +1,11 @@
 package com.steaks4uce.Herobrine.events;
 import com.steaks4uce.Herobrine.Herobrine;
-import com.steaks4uce.Herobrine.effects.SmokeArea;
-import com.steaks4uce.Herobrine.logger.Logger;
+import com.steaks4uce.Herobrine.text.CustomLogger;
 
+import com.steaks4uce.Herobrine.text.TextGenerator;
+import com.steaks4uce.Herobrine.tunnels.TunnelHandler;
 import java.util.Random;
+import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -12,13 +14,15 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.EnderCrystal;
+import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
 
 public class Events {
     public static Herobrine plugin;
-    Logger log = new Logger();
+    CustomLogger log = new CustomLogger();
     
     public Events(Herobrine instance) {
         plugin = instance;
@@ -27,17 +31,17 @@ public class Events {
     public void createTorch(Player p) {
         Block torch = p.getLocation().add(5.0D, 0.0D, 0.0D).getBlock();
         Block groundBlock = torch.getLocation().subtract(0.0D, 1.0D, 0.0D).getBlock();
-        if ((torch.getTypeId() == 0) && (groundBlock.getTypeId() != 0)) {
+        if (torch.getTypeId() == 0 && groundBlock.getTypeId() != 0) {
             torch.setType(Material.REDSTONE_TORCH_ON);
             log.event(2, p.getName());
-            plugin.smokes.add(new SmokeArea(torch.getLocation()));
+            plugin.addSmoke(torch.getLocation());
         }
     }
         
     public void createSign(Player p) {
         Block signPost = p.getLocation().add(5.0D, 0.0D, 0.0D).getBlock();
         Block groundBlock = signPost.getLocation().subtract(0.0D, 1.0D, 0.0D).getBlock();
-        if ((signPost.getTypeId() == 0) && (groundBlock.getTypeId() != 0)) {
+        if (signPost.getTypeId() == 0 && groundBlock.getTypeId() != 0) {
             signPost.setType(Material.SIGN_POST);
             BlockState signState = signPost.getState();
             Sign signBlock = (Sign)signState;
@@ -68,7 +72,7 @@ public class Events {
                 signBlock.setLine(2, "a myth.");
             }
             log.event(3, p.getName()); 
-            plugin.smokes.add(new SmokeArea(signPost.getLocation()));
+            plugin.addSmoke(signPost.getLocation());
         }  
     }
         
@@ -83,15 +87,13 @@ public class Events {
             w.createExplosion(p.getLocation().add(3, 0, 3), -1.0F);
             Herobrine.trackingEntity = true;
             w.spawnCreature(p.getLocation().add(3, 0, 3), CreatureType.PIG_ZOMBIE);
+            PigZombie pz = (PigZombie) plugin.hbEntity;
+            pz.setAngry(true);
+            pz.setTarget(p);
             Herobrine.isAttacking = true;
-            Random messages = new Random();
-            int message = messages.nextInt(3);
-            if (message == 1) {
-                p.sendMessage("<Herobrine> Remember me, " + p.getName() + "?");
-            } else if (message == 2) {
-                p.sendMessage("<Herobrine> Never doubt me, " + p.getName() + "!");
-            } else {
-                p.sendMessage("<Herobrine> I will not die!");
+            if (Herobrine.sendMessages) {
+                TextGenerator tg = new TextGenerator();
+                p.sendMessage(tg.getMessage());
             }
             log.event(5, p.getName());
         }
@@ -101,7 +103,7 @@ public class Events {
         if (plugin.isDead() == true && plugin.canSpawn(p.getWorld())) {
             World w = p.getWorld();
             Block b = p.getLocation().add(5, 0, 0).getBlock();
-            if (b.getType() == Material.AIR) {
+            if (b.getType().equals(Material.AIR)) {
                 Herobrine.trackingEntity = true;
                 w.spawnCreature(p.getLocation().add(5, 0, 0), CreatureType.PIG_ZOMBIE);
                 plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -117,29 +119,17 @@ public class Events {
     public void randomFire(Player p) {
         Block fire = p.getLocation().add(5, 0, 0).getBlock();
         Block ground = fire.getLocation().subtract(0, 1, 0).getBlock();
-        if (fire.getTypeId() == 0 && ground.getTypeId() != 0 && Herobrine.useFire == true) {
+        if (fire.getTypeId() == 0 && ground.getTypeId() != 0 && Herobrine.useFire) {
             fire.setType(Material.FIRE);
             log.event(7, p.getName());
         }
-    }
-        
-    public void dropItem(Player p) {
-        World w = p.getWorld();
-        Random random = new Random();
-        int rand = random.nextInt(3);
-        if (rand == 1) {
-            w.dropItemNaturally(p.getLocation().add(5, 0, 0), new ItemStack(Material.BUCKET, 1));
-        } else {
-            w.dropItemNaturally(p.getLocation().add(5, 0, 0), new ItemStack(Material.FLINT_AND_STEEL, 1));
-        }
-        log.event(9, p.getName());
     }
     
     public void placeChest(Player p) {
         Block chest = p.getLocation().add(5, 0, 0).getBlock();
         Block ground = chest.getLocation().subtract(0, 1, 0).getBlock();
         if (ground.getTypeId() != 0 && chest.getTypeId() == 0) {
-            plugin.smokes.add(new SmokeArea(chest.getLocation()));
+            plugin.addSmoke(chest.getLocation());
             chest.setType(Material.LOCKED_CHEST);
             log.event(10, p.getName());
         }
@@ -171,9 +161,42 @@ public class Events {
         }
     }
     
-    public void superJump(Double i) {
-        Vector velocity = plugin.hbEntity.getVelocity();
-        Vector newVelocity = new Vector(velocity.getX(), i, velocity.getZ());
-        plugin.hbEntity.setVelocity(newVelocity);
+    public void sendMessage(Player p) {
+        String s = "<" + ChatColor.RED + "Herobrine" + ChatColor.WHITE + "> ";
+        p.sendMessage(s + "I'm here.");
+        log.event(13, p.getName());
+    }
+    
+    public void digTunnel(Player p) {
+        Random r = new Random();
+        TunnelHandler th = new TunnelHandler();
+        Location l = p.getLocation().subtract(0, 5, 0);
+        int s = r.nextInt(26);
+        if (s < 10) {
+            s = 10;
+        }
+        th.createTunnel(s, l, 4);
+        log.event(15, p.getName());
+    }
+    
+    public void createCrystal(Player p) {
+        Location l = p.getLocation().add(5, 0, 0);
+        Block b = l.getBlock();
+        Block a = b.getLocation().subtract(0, 1, 0).getBlock();
+        World w = p.getWorld();
+        if (b.getType().equals(Material.AIR) && !(a.getType().equals(Material.AIR))) {
+            w.spawn(l, EnderCrystal.class);
+            log.event(16, p.getName());
+        }
+    }
+    
+    public void createTNT(Player p) {
+        Location l = p.getLocation().add(5, 0, 0);
+        Block a = l.subtract(0, 1, 0).getBlock();
+        Block b = l.getBlock();
+        World w = p.getWorld();
+        if (a.getType() != Material.AIR && b.getType().equals(Material.AIR)) {
+            w.spawn(l, TNTPrimed.class);
+        }
     }
 }

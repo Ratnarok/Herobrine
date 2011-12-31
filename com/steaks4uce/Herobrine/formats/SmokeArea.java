@@ -1,4 +1,4 @@
-package com.steaks4uce.Herobrine.effects;
+package com.steaks4uce.Herobrine.formats;
 
 import org.bukkit.Location;
 

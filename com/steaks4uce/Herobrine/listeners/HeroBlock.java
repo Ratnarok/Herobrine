@@ -1,8 +1,8 @@
 package com.steaks4uce.Herobrine.listeners;
 import com.steaks4uce.Herobrine.Herobrine;
-import com.steaks4uce.Herobrine.effects.SmokeArea;
+import com.steaks4uce.Herobrine.formats.SmokeArea;
 import com.steaks4uce.Herobrine.events.Events;
-import com.steaks4uce.Herobrine.logger.Logger;
+import com.steaks4uce.Herobrine.text.CustomLogger;
 
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -16,7 +16,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 public class HeroBlock extends BlockListener {
     public static Herobrine plugin;
-    Logger log = new Logger();
+    CustomLogger log = new CustomLogger();
 
     public HeroBlock(Herobrine instance) {
         plugin = instance;

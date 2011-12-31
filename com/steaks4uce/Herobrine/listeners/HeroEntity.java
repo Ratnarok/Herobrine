@@ -1,8 +1,8 @@
 package com.steaks4uce.Herobrine.listeners;
 import com.steaks4uce.Herobrine.Herobrine;
-import com.steaks4uce.Herobrine.logger.Logger;
+import com.steaks4uce.Herobrine.text.CustomLogger;
 
-import java.util.Random;
+import com.steaks4uce.Herobrine.text.TextGenerator;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.CreatureType;
@@ -20,7 +20,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class HeroEntity extends EntityListener {
     public static Herobrine plugin;
-    Logger log = new Logger();
+    CustomLogger log = new CustomLogger();
     
     public HeroEntity(Herobrine instance) {
         plugin = instance;
@@ -55,8 +55,7 @@ public class HeroEntity extends EntityListener {
         Entity e = event.getEntity();
         World w = event.getEntity().getWorld();
         if (e.equals(plugin.hbEntity)) {
-            plugin.hbEntity = null;
-            w.dropItemNaturally(e.getLocation(), new ItemStack(Material.GOLD_SWORD, 1));
+            w.dropItemNaturally(e.getLocation(), new ItemStack(Material.GOLDEN_APPLE, 1));
             w.createExplosion(e.getLocation(), -1.0F);
             Herobrine.isAttacking = false;
             event.setDroppedExp(50);
@@ -66,17 +65,8 @@ public class HeroEntity extends EntityListener {
                 if(ev.getDamager() instanceof Player) {
                     Player p = (Player)ev.getDamager();
                     if (Herobrine.sendMessages) {
-                        Random messages = new Random();
-                        int message = messages.nextInt(3);
-                        if (message == 1) {
-                            p.sendMessage("<Herobrine> This isn't the end.");
-                        } else if (message == 2) {
-                            p.sendMessage("<Herobrine> I'll be back.");
-                        } else if (message == 3) {
-                            p.sendMessage("<Herobrine> I'm watching you, I always will be... ");
-                        } else {
-                            p.sendMessage("<Herobrine> I will prevail!");
-                        }
+                        TextGenerator tg = new TextGenerator();
+                        p.sendMessage(tg.getMessage());
                     } 
                     log.event(8, p.getName());
                 }
@@ -86,7 +76,8 @@ public class HeroEntity extends EntityListener {
 
     @Override
     public void onEntityTarget(EntityTargetEvent event) {
-        if (event.getTarget().equals(plugin.hbEntity)) {
+        Entity e = event.getEntity();
+        if (e.equals(plugin.hbEntity)) {
             event.setCancelled(true);
         }
     } 

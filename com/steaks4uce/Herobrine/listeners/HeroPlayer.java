@@ -10,7 +10,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 public class HeroPlayer extends PlayerListener {
     public static Herobrine plugin;
-    Random chanceGenerator = new Random();
+    Random r = new Random();
     Events actions = new Events(plugin);
 
     public HeroPlayer(Herobrine instance) {
@@ -20,19 +20,19 @@ public class HeroPlayer extends PlayerListener {
     @Override
     public void onPlayerMove(PlayerMoveEvent event) {
         Player p = event.getPlayer();
-        int eventChoice = this.chanceGenerator.nextInt(Herobrine.innerChance + 1);
+        int eventChoice = r.nextInt(Herobrine.innerChance + 1);
         if (eventChoice == 1) {
-            if (Herobrine.modifyWorld == true) {
+            if (Herobrine.modifyWorld) {
                 actions.createTorch(p);
             }
         } else if (eventChoice == 2) {
-            if (Herobrine.modifyWorld == true) {
+            if (Herobrine.modifyWorld) {
                 actions.createSign(p);
             }
         } else if (eventChoice == 3) {
             actions.playSound(p);
         } else if (eventChoice == 4) {
-            if (Herobrine.modifyWorld == true) {
+            if (Herobrine.modifyWorld) {
                 actions.randomFire(p);
             }
         } else if (eventChoice == 5) {
@@ -40,14 +40,20 @@ public class HeroPlayer extends PlayerListener {
         } else if (eventChoice == 6) {
             actions.appearNear(p);
         } else if (eventChoice == 7) {
-            actions.dropItem(p);
-        } else if (eventChoice == 8) {
-            if (Herobrine.modifyWorld == true) {
+            if (Herobrine.modifyWorld) {
                 actions.buryPlayer(p);
             }
-        } else if (eventChoice == 9) {
-            if (Herobrine.modifyWorld == true) {
+        } else if (eventChoice == 8) {
+            if (Herobrine.modifyWorld) {
                 actions.placeChest(p);
+            }
+        } else if (eventChoice == 9) {
+            if (Herobrine.sendMessages) {
+                actions.sendMessage(p);
+            }
+        } else if (eventChoice == 10) {
+            if (Herobrine.modifyWorld) {
+                actions.digTunnel(p);
             }
         }
     }
@@ -57,11 +63,10 @@ public class HeroPlayer extends PlayerListener {
         String m = event.getMessage();
         m = m.toLowerCase();
         if (m.contains("herobrine")) {
-            Random rand = new Random();
-            int i = rand.nextInt(26);
+            int i = r.nextInt(11);
             if (i == 1) {
                 Player p = event.getPlayer();
-                p.damage(20);
+                actions.sendMessage(p);
             }
         }
     }
