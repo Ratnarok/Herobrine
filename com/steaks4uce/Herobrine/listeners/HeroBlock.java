@@ -1,17 +1,19 @@
 package com.steaks4uce.Herobrine.listeners;
 import com.steaks4uce.Herobrine.Herobrine;
 import com.steaks4uce.Herobrine.formats.SmokeArea;
-import com.steaks4uce.Herobrine.events.Events;
+import com.steaks4uce.Herobrine.PossibleActions;
 import com.steaks4uce.Herobrine.text.CustomLogger;
 
+import com.steaks4uce.Herobrine.text.TextGenerator;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Zombie;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockListener;
-import java.util.Random;
 import org.bukkit.event.block.BlockBreakEvent;
 
 public class HeroBlock extends BlockListener {
@@ -25,7 +27,7 @@ public class HeroBlock extends BlockListener {
     @Override
     public void onBlockIgnite(BlockIgniteEvent event) {
         Block b = event.getBlock();
-        if (event.getCause() == BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL) {
+        if (event.getCause().equals(BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL)) {
             Player p = event.getPlayer();
             World w = event.getBlock().getWorld();
             Block netherRack = b.getLocation().subtract(0.0D, 1.0D, 0.0D).getBlock();
@@ -42,18 +44,16 @@ public class HeroBlock extends BlockListener {
                 w.strikeLightning(b.getLocation());
                 w.createExplosion(b.getLocation(), -1.0F);
                 if (Herobrine.sendMessages) {
-                    Random messages = new Random();
-                    int message = messages.nextInt(3);
-                    if (message == 0) {
-                        plugin.getServer().broadcastMessage("<Herobrine> Only god can help you now!");
-                    } else if (message == 1) {
-                        plugin.getServer().broadcastMessage("<Herobrine> Prepare for hell!");
-                    } else {
-                        plugin.getServer().broadcastMessage("<Herobrine> Never doubt my power!");
-                    }
+                    TextGenerator tg = new TextGenerator();
+                    plugin.getServer().broadcastMessage(tg.getMessage());
+                }
+                if (p.getGameMode().equals(GameMode.CREATIVE)) {
+                    p.setGameMode(GameMode.SURVIVAL);
                 }
                 Herobrine.trackingEntity = Boolean.valueOf(true);
-                w.spawnCreature(b.getLocation(), CreatureType.PIG_ZOMBIE);
+                w.spawnCreature(b.getLocation(), CreatureType.ZOMBIE);
+                Zombie z = (Zombie) plugin.hbEntity;
+                z.setTarget(p);
                 log.event(1, p.getName()); 
             }
         }
@@ -74,7 +74,7 @@ public class HeroBlock extends BlockListener {
         if (b.getType().equals(Material.LOCKED_CHEST)) {
             event.setCancelled(true);
             b.setType(Material.AIR);
-            Events actions = new Events(plugin);
+            PossibleActions actions = new PossibleActions(plugin);
             actions.explodeChest(event.getPlayer(), b.getLocation());
         }
     }

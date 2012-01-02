@@ -1,6 +1,6 @@
 package com.steaks4uce.Herobrine.listeners;
 import com.steaks4uce.Herobrine.Herobrine;
-import com.steaks4uce.Herobrine.events.Events;
+import com.steaks4uce.Herobrine.PossibleActions;
 
 import java.util.Random;
 import org.bukkit.entity.Player;
@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 public class HeroPlayer extends PlayerListener {
     public static Herobrine plugin;
     Random r = new Random();
-    Events actions = new Events(plugin);
+    PossibleActions actions = new PossibleActions(plugin);
 
     public HeroPlayer(Herobrine instance) {
         plugin = instance;

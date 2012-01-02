@@ -3,7 +3,6 @@ import com.steaks4uce.Herobrine.listeners.HeroPlayer;
 import com.steaks4uce.Herobrine.listeners.HeroBlock;
 import com.steaks4uce.Herobrine.listeners.HeroEntity;
 import com.steaks4uce.Herobrine.formats.SmokeArea;
-import com.steaks4uce.Herobrine.events.Events;
 
 import com.steaks4uce.Herobrine.text.CustomLogger;
 import java.io.File;
@@ -40,7 +39,7 @@ public class Herobrine extends JavaPlugin {
     public Entity hbEntity;
     public static int innerChance = 100000;
     public ArrayList<SmokeArea> smokes = new ArrayList<SmokeArea>();
-    Events actions = new Events(this);
+    PossibleActions actions = new PossibleActions(this);
     public static Boolean removeMossyCobblestone = Boolean.valueOf(true);
     public static Boolean changeEnvironment = Boolean.valueOf(true);
     public static Boolean useFire = Boolean.valueOf(true);
@@ -71,7 +70,7 @@ public class Herobrine extends JavaPlugin {
                 settingsFile.put("allow-fire", Boolean.toString(useFire));
                 settingsFile.put("fire-trails", Boolean.toString(fireTrails));
                 settingsFile.put("can-attack", Boolean.toString(canAttack));
-                settingsFile.store(out, "Configuration file for Herobrine 1.1");
+                settingsFile.store(out, "Configuration file for Herobrine 1.3");
             } catch (IOException ex) {
                 log.info("[Herobrine] Failed to create the configuration file!");
             }
@@ -126,10 +125,6 @@ public class Herobrine extends JavaPlugin {
                         if (b.getType().equals(Material.AIR) && !(g.getType().equals(Material.AIR))) {
                             b.setType(Material.FIRE);
                         }  
-                    }
-                    Block b = hbEntity.getLocation().subtract(0, 1, 0).getBlock();
-                    if (b.getType().equals(Material.WATER)) {
-                        
                     }
                 }
                 
@@ -233,7 +228,19 @@ public class Herobrine extends JavaPlugin {
                         p.sendMessage(t + "attack"  + w + " - Attack a certain player.");
                         p.sendMessage(t + "appear"  + w + " - Appear near a certain player.");
                         p.sendMessage(t + "bury"  + w + " - Bury a certain player alive.");
+                        p.sendMessage(t + "tunnel" + w + " - Tunnel near a player.");
                         p.sendMessage(t + "remove"  + w + " - Remove him in case of error.");
+                    } else if (args[0].equalsIgnoreCase("tunnel")) {
+                        Player p = (Player) sender;
+                        Player target = getServer().getPlayer(args[1]);
+                        if (p.isOp()) {
+                            actions.digTunnel(target);
+                            p.sendMessage(ChatColor.GREEN + "Herobrine tunneled under " + target.getName());
+                            cm.command(p.getName(), "/hb tunnel");
+                        } else {
+                            p.sendMessage(ChatColor.RED + "You do not have permission for this!");
+                            cm.failed(p.getName(), "/hb tunnel");
+                        }
                     } else {
                         Player p = (Player)sender;
                         p.sendMessage(ChatColor.RED + "Not a valid command!");
