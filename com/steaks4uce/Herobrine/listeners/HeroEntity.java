@@ -73,7 +73,7 @@ public class HeroEntity extends EntityListener {
 
     @Override
     public void onEntityTarget(EntityTargetEvent event) {
-        Entity e = event.getEntity();
+        Entity e = event.getTarget();
         if (e.equals(plugin.hbEntity)) {
             event.setCancelled(true);
         }
